@@ -1,0 +1,54 @@
+﻿@page "/"
+@using BlazorAppTest.Client.Enum
+@using BlazorAppTest.Client.Model
+@using BlazorAppTest.Resource
+<PageTitle>Home</PageTitle>
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="6">
+            <MudPaper>
+                <MudForm @ref="form">
+                    <MudTextField Label=@Resource.Id @bind-Value="personAccountViewModel.Id" Required="false" />
+                    <MudTextField Label=@Resource.Name @bind-Value="personAccountViewModel.Name" Required="true" />
+                    <MudTextField Label=@Resource.Number @bind-Value="personAccountViewModel.Number" Required="true" />
+                    <MudSelect T="string" Label=@Resource.Type @bind-Value="personAccountViewModel.Status" Required="true">
+                        <MudSelectItem Value="@("+")"> + </MudSelectItem>
+                        <MudSelectItem Value="@("-")"> - </MudSelectItem>
+                    </MudSelect>
+                    <MudButton Color="Color.Primary" OnClick="(() => AddPersonWithAccountDetail())">@Resource.Add</MudButton>
+                </MudForm>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudPaper>
+                <MudSelect T="FilterType" Label="Filter" ValueChanged="@(async (FilterType newFilter) => await OnFilterChanged(newFilter))">
+                    <MudSelectItem Value="FilterType.TotalRecords">Registros totales</MudSelectItem>
+                    <MudSelectItem Value="FilterType.Income">Ingresos</MudSelectItem>
+                    <MudSelectItem Value="FilterType.Withdrawals">Retiros</MudSelectItem>
+                    <MudSelectItem Value="FilterType.History">Historial</MudSelectItem>
+                </MudSelect>
+            </MudPaper>
+            <MudTable Items="persons">
+                <HeaderContent>
+                    <MudTh> @Resource.Id </MudTh>
+                    <MudTh> @Resource.Name </MudTh>
+                    <MudTh> @Resource.Number </MudTh>
+                    <MudTh> @Resource.Total </MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel=@Resource.Id>@context.Id</MudTd>
+                    <MudTd DataLabel=@Resource.Name>@context.Name</MudTd>
+                    <MudTd DataLabel=@Resource.Number>
+                        @foreach (var accountDetail in @context.AccountDetails)
+                        {
+                            <div>@accountDetail.DisplayNumber</div>
+                        }
+                    </MudTd>
+                    <MudTd DataLabel=@Resource.Total>@context.Total</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
